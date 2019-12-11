@@ -20,7 +20,7 @@ jobs:
           steps:
             - run:
                 name: Send pending status
-                command: >-
+                command: |-
                   curl --request POST
                   --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.sha >>
                   --header 'authorization: Basic ${GITHUB_API_TOKEN}'
@@ -84,7 +84,7 @@ jobs:
           steps:
             - run:
                 name: Sending success status
-                command: >-
+                command: |-
                   curl --request POST
                     --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.sha >>
                     --header 'authorization: Basic ${GITHUB_API_TOKEN}'
