@@ -58,16 +58,10 @@ jobs:
             then
               npm ci && cd node_modules/mattermost-redux && npm install && npm run build && cd ../.. && make build
             fi
-      - persist_to_workspace:
-          root: /go/src/github.com/metanerd
-          paths:
-            - mattermost-server
-            - mattermost-webapp
 
   build:
     docker:
       - image: mattermost/mattermost-build-server:oct-18-2019
-    working_directory: /go/src/github.com/metanerd/circleci-ee
     steps:
       - checkout
       - attach_workspace:
@@ -75,11 +69,6 @@ jobs:
       - run:
           command: |
             echo "Installing golangci-lint"
-      - persist_to_workspace:
-          root: /go/src/github.com/metanerd
-          paths:
-            - mattermost-server
-            - mattermost-webapp
 
   test:
     machine:
