@@ -51,12 +51,6 @@ jobs:
             export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
             echo "$WEBAPP_GIT_COMMIT"
 
-#            curl -f -o ./dist.tar.gz https://pr-builds.mattermost.com/mattermost-webapp/commit/${WEBAPP_GIT_COMMIT}/mattermost-webapp.tar.gz && mkdir ./dist && tar -xvf ./dist.tar.gz -C ./dist --strip-components=1 || echo "curl failed" && export CURL_FAILED=1
-#            if [ $CURL_FAILED -eq 1 ]
-#            then
-#              npm ci && cd node_modules/mattermost-redux && npm install && npm run build && cd ../.. && make build
-#            fi
-
   build:
     docker:
       - image: mattermost/mattermost-build-server:oct-18-2019
@@ -106,8 +100,10 @@ workflows:
   trigger-from-server:
     when: << pipeline.parameters.sha >>
     jobs:
-      - setup
+      - setup:
+          context: metanerd-trigger-ee
       - build
       - test:
+          context: metanerd-trigger-ee
           requires:
             - build
