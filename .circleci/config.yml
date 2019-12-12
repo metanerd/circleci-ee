@@ -18,6 +18,7 @@ jobs:
       - when:
           condition: << pipeline.parameters.sha >>
           steps:
+            - run: expr length "${GITHUB_API_TOKEN}"
             - run:
                 name: Send pending status
                 command: |
