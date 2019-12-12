@@ -51,38 +51,38 @@ jobs:
             export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
             echo "$WEBAPP_GIT_COMMIT"
 
-  build:
-    docker:
-      - image: mattermost/mattermost-build-server:oct-18-2019
-    steps:
-      - checkout
-      - attach_workspace:
-          at: /go/src/github.com/metanerd/
-      - run:
-          command: |
-            echo "Installing golangci-lint"
-
-  test:
-    machine:
-      image: ubuntu-1604:201903-01
-    working_directory: ~/go/src/github.com/metanerd/circleci-ee
-    steps:
-      - checkout
-      - run: git branch
-      - run: echo ${CIRCLE_BRANCH}
-      - when:
-          condition: << pipeline.parameters.sha >>
-          steps:
-            - run: expr length "${GITHUB_API_TOKEN}"
-            - run:
-                name: Sending success status
-                command: |
-                  curl \
-                    --request POST \
-                    --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.sha >> \
-                    --header 'authorization: Basic ${GITHUB_API_TOKEN}' \
-                    --header 'content-type: application/json' \
-                    --data '{"state": "success", "description": "Enterprise tests passed. ", "context": "enterprise-integration/circleci"}'
+#  build:
+#    docker:
+#      - image: mattermost/mattermost-build-server:oct-18-2019
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: /go/src/github.com/metanerd/
+#      - run:
+#          command: |
+#            echo "Installing golangci-lint"
+#
+#  test:
+#    machine:
+#      image: ubuntu-1604:201903-01
+#    working_directory: ~/go/src/github.com/metanerd/circleci-ee
+#    steps:
+#      - checkout
+#      - run: git branch
+#      - run: echo ${CIRCLE_BRANCH}
+#      - when:
+#          condition: << pipeline.parameters.sha >>
+#          steps:
+#            - run: expr length "${GITHUB_API_TOKEN}"
+#            - run:
+#                name: Sending success status
+#                command: |
+#                  curl \
+#                    --request POST \
+#                    --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.sha >> \
+#                    --header 'authorization: Basic ${GITHUB_API_TOKEN}' \
+#                    --header 'content-type: application/json' \
+#                    --data '{"state": "success", "description": "Enterprise tests passed. ", "context": "enterprise-integration/circleci"}'
 
 workflows:
   version: 2
@@ -90,21 +90,21 @@ workflows:
     unless: << pipeline.parameters.sha >>
     jobs:
       - setup
-      - build
-      - test:
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: /^pull\/.*$/
+#      - build
+#      - test:
+#          requires:
+#            - build
+#          filters:
+#            branches:
+#              ignore: /^pull\/.*$/
 
   trigger-from-server:
     when: << pipeline.parameters.sha >>
     jobs:
       - setup:
           context: metanerd-trigger-ee
-      - build
-      - test:
-          context: metanerd-trigger-ee
-          requires:
-            - build
+#      - build
+#      - test:
+#          context: metanerd-trigger-ee
+#          requires:
+#            - build
