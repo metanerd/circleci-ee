@@ -1,10 +1,10 @@
 version: 2.1
 
 parameters:
-  branch_external:
+  external_branch:
     type: string
     default: ""
-  sha:
+  external_sha:
     type: string
     default: ""
 
@@ -48,7 +48,7 @@ jobs:
             git clone git@github.com:mattermost/mattermost-server.git
 
             cd mattermost-server
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch.sh "<< pipeline.parameters.branch_external >>"
+            /go/src/github.com/metanerd/.circleci/git-checkout-branch.sh "<< pipeline.parameters.external_branch >>"
             git branch
       - run:
           name: Checkout mattermost-webapp
@@ -59,7 +59,7 @@ jobs:
             git clone git@github.com:mattermost/mattermost-webapp.git
 
             cd mattermost-webapp
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch.sh "<< pipeline.parameters.branch_external >>"
+            /go/src/github.com/metanerd/.circleci/git-checkout-branch.sh "<< pipeline.parameters.external_branch >>"
 
             export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
             echo "$WEBAPP_GIT_COMMIT"
@@ -84,7 +84,7 @@ jobs:
       - run: git branch
       - run: echo ${CIRCLE_BRANCH}
       - when:
-          condition: << pipeline.parameters.sha >>
+          condition: << pipeline.parameters.external_sha >>
           steps:
             - run: expr length "${GITHUB_USER_TOKEN}"
             - run:
@@ -92,7 +92,7 @@ jobs:
                 command: |
                   curl \
                     --request POST \
-                    --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.sha >> \
+                    --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.external_sha >> \
                     --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
                     --header 'content-type: application/json' \
                     --data '{"state": "success", "description": "Enterprise tests passed. ", "context": "enterprise-integration/circleci"}'
@@ -100,7 +100,7 @@ jobs:
 workflows:
   version: 2
   standard-ee:
-    unless: << pipeline.parameters.sha >>
+    unless: << pipeline.parameters.external_sha >>
     jobs:
       - setup:
           context: metanerd-trigger-ee
@@ -113,7 +113,7 @@ workflows:
 #              ignore: /^pull\/.*$/
 
   trigger-from-server:
-    when: << pipeline.parameters.sha >>
+    when: << pipeline.parameters.external_sha >>
     jobs:
       - setup:
           context: metanerd-trigger-ee
