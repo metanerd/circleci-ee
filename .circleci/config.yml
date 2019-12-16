@@ -32,11 +32,12 @@ jobs:
           name: test trapping the error
           command: |
             CURL=$(curl \
-               --request POST \
-               --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.sha >> \
-               --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
-               --header 'content-type: application/json' \
-            --data '{"state": "fail", "description": "Integration with enterprise failed, please contact a mattermost org member to debug. ", "context": "circleci/enterprise-integration"}')
+              --request POST \
+              --url https://api.github.com/repos/metanerd/circleci-test/statuses/b712372781fe8b181f499288344001d6db7b049b \
+              --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
+              --header 'content-type: application/json' \
+              --data '{"state": "fail", "description": "Integration with enterprise failed, please contact a mattermost org member to debug. ", "context": "circleci/enterprise-integration"}')
+            echo $CURL
             trap '$CURL' ERR
             trap -p
             echo "hello" | grep foo
