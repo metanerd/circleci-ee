@@ -29,20 +29,16 @@ jobs:
                     --header 'content-type: application/json' \
                     --data '{"state": "pending", "description": "Running Enterprise master with << pipeline.parameters.sha >> . ", "context": "circleci/enterprise-integration"}'
       - run:
+          name: test trapping the error
           command: |
-            export CURL=$(curl \
-            --request POST \
-            --url https://api.github.com/repos/metanerd/circleci-test/statuses/b712372781fe8b181f499288344001d6db7b049b \
-            --header 'content-type: application/json' \
-            --data '{"state": "failure", "description": "FAILED ", "context": "circleci/enterprise-integration"}')
-      - run: env | grep CURL
-#      - run:
-#          name: test trapping the error
-#          command: |
-#            env
-#            trap '$CURL' ERR
-#            trap -p
-#            echo "hello" | grep foo
+            trap 'curl \
+              --request POST \
+              --url https://api.github.com/repos/metanerd/circleci-test/statuses/b712372781fe8b181f499288344001d6db7b049b \
+              --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
+              --header ''content-type: application/json'' \
+              --data ''{"state": "failure", "description": "ELI SAD ", "context": "circleci/enterprise-integration"}''' ERR
+            trap -p
+            echo "hello" | grep foo
       - run:
           name: Checkout mattermost-server
           command: |
