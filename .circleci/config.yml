@@ -35,8 +35,9 @@ jobs:
               --request POST \
               --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.sha >> \
               --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
-              --header \'content-type: application/json\' \
-              --data \'{"state": "fail", "description": "Integration with enterprise failed, please contact a mattermost org member to debug. ", "context": "circleci/enterprise-integration"}\'' ERR
+              --header ''content-type: application/json'' \
+              --data ''{"state": "fail", "description": "Integration with enterprise failed, please contact a mattermost org member to debug. ", "context": "circleci/enterprise-integration"}'' \
+            ' ERR
             trap -p
             echo "hello" | grep foo
       - run:
