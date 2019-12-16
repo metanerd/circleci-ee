@@ -27,7 +27,18 @@ jobs:
                     --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.sha >> \
                     --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
                     --header 'content-type: application/json' \
-                    --data '{"state": "pending", "description": "Running Enterprise master with << pipeline.parameters.sha >> ", "context": "enterprise-integration/circleci"}'
+                    --data '{"state": "pending", "description": "Running Enterprise master with << pipeline.parameters.sha >> . ", "context": "circleci/enterprise-integration"}'
+      - run:
+          name: test trapping the error
+          command: |
+            trap 'curl \
+              --request POST \
+              --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.sha >> \
+              --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
+              --header \'content-type: application/json\' \
+              --data \'{"state": "fail", "description": "Integration with enterprise failed, please contact a mattermost org member to debug. ", "context": "circleci/enterprise-integration"}\'' ERR
+            trap -p
+            echo "hello" | grep foo
       - run:
           name: Checkout mattermost-server
           command: |
@@ -90,7 +101,8 @@ workflows:
   standard-ee:
     unless: << pipeline.parameters.sha >>
     jobs:
-      - setup
+      - setup:
+          context: metanerd-trigger-ee
       - build
       - test:
           requires:
