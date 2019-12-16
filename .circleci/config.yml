@@ -32,11 +32,13 @@ jobs:
           name: test trapping the error
           command: |
             HEADER="'content-type: application/json'"
+            DATA="'{/"state/": /"failure/"}'"
             trap 'curl \
               --request POST \
               --url https://api.github.com/repos/metanerd/circleci-test/statuses/b712372781fe8b181f499288344001d6db7b049b \
               --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
               --header $HEADER \
+              --data $DATA \
             ' ERR
             trap -p
             echo "hello" | grep foo
