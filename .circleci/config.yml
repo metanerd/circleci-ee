@@ -104,13 +104,13 @@ workflows:
     jobs:
       - setup:
           context: metanerd-trigger-ee
-      - build
-      - test:
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: /^pull\/.*$/
+#      - build
+#      - test:
+#          requires:
+#            - build
+#          filters:
+#            branches:
+#              ignore: /^pull\/.*$/
 
   trigger-from-server:
     when: << pipeline.parameters.sha >>
