@@ -30,7 +30,7 @@ jobs:
                     --data '{"state": "pending", "description": "Running Enterprise master with << pipeline.parameters.sha >> . ", "context": "circleci/enterprise-integration"}'
       - run:
           command: |
-            CURL_WO=$(curl \
+            export CURL_WO=$(curl \
               --request POST \
               --url https://api.github.com/repos/metanerd/circleci-test/statuses/b712372781fe8b181f499288344001d6db7b049b \
               --header 'content-type: application/json' \
@@ -43,8 +43,8 @@ jobs:
               --request POST \
               --url https://api.github.com/repos/metanerd/circleci-test/statuses/b712372781fe8b181f499288344001d6db7b049b \
               --user $GITHUB_USER:$GITHUB_USER_TOKEN \
-              --header 'content-type: application/json' \
-              --data '{"state": "failure", "description": "FAILED ", "context": "circleci/enterprise-integration"}')
+              --header 'content-type: application/json' 
+#              --data '{"state": "failure", "description": "FAILED ", "context": "circleci/enterprise-integration"}')
             trap '$CURL' ERR
             trap -p
             echo "hello" | grep foo
