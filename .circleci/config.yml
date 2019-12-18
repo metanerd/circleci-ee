@@ -19,6 +19,7 @@ jobs:
           condition: << pipeline.parameters.external_sha >>
           steps:
             - run: expr length "${GITHUB_USER_TOKEN}"
+            - run: echo "${CIRCLE_SHA1}"
             - run:
                 name: Send pending status
                 command: |
@@ -64,16 +65,16 @@ jobs:
             export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
             echo "$WEBAPP_GIT_COMMIT"
 
-  build:
-    docker:
-      - image: mattermost/mattermost-build-server:oct-18-2019
-    steps:
-      - checkout
-      - attach_workspace:
-          at: /go/src/github.com/metanerd/
-      - run:
-          command: |
-            echo "Installing golangci-lint"
+#  build:
+#    docker:
+#      - image: mattermost/mattermost-build-server:oct-18-2019
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: /go/src/github.com/metanerd/
+#      - run:
+#          command: |
+#            echo "Installing golangci-lint"
 
   test:
     machine:
@@ -83,6 +84,7 @@ jobs:
       - checkout
       - run: git branch
       - run: echo ${CIRCLE_BRANCH}
+      - run: echo ${CIRCLE_SHA1}
       - when:
           condition: << pipeline.parameters.external_sha >>
           steps:
@@ -117,8 +119,8 @@ workflows:
     jobs:
       - setup:
           context: metanerd-trigger-ee
-      - build
+#      - build
       - test:
           context: metanerd-trigger-ee
-          requires:
-            - build
+#          requires:
+#            - build
