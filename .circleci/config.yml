@@ -20,6 +20,8 @@ jobs:
           steps:
             - run: expr length "${GITHUB_USER_TOKEN}"
             - run: echo "${CIRCLE_SHA1}"
+            - run: echo "<< pipeline.parameters.external_sha >>"
+            - run: if [[ "${CIRCLE_SHA1}" == "<< pipeline.parameters.external_sha >>" ]];then echo "same"; else echo "different";fi;
             - run:
                 name: Send pending status
                 command: |
@@ -41,29 +43,29 @@ jobs:
 #            ' ERR
 #            trap -p
 #            echo "hello" | grep foo
-      - run:
-          name: Checkout mattermost-server
-          command: |
-            mkdir -p ~/.ssh/
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            git clone git@github.com:mattermost/mattermost-server.git
-
-            cd mattermost-server
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch.sh "<< pipeline.parameters.external_branch >>"
-            git branch
-      - run:
-          name: Checkout mattermost-webapp
-          command: |
-            ls -la
-            mkdir -p ~/.ssh/
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            git clone git@github.com:mattermost/mattermost-webapp.git
-
-            cd mattermost-webapp
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch.sh "<< pipeline.parameters.external_branch >>"
-
-            export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
-            echo "$WEBAPP_GIT_COMMIT"
+#      - run:
+#          name: Checkout mattermost-server
+#          command: |
+#            mkdir -p ~/.ssh/
+#            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+#            git clone git@github.com:mattermost/mattermost-server.git
+#
+#            cd mattermost-server
+#            /go/src/github.com/metanerd/.circleci/git-checkout-branch.sh "<< pipeline.parameters.external_branch >>"
+#            git branch
+#      - run:
+#          name: Checkout mattermost-webapp
+#          command: |
+#            ls -la
+#            mkdir -p ~/.ssh/
+#            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+#            git clone git@github.com:mattermost/mattermost-webapp.git
+#
+#            cd mattermost-webapp
+#            /go/src/github.com/metanerd/.circleci/git-checkout-branch.sh "<< pipeline.parameters.external_branch >>"
+#
+#            export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
+#            echo "$WEBAPP_GIT_COMMIT"
 
 #  build:
 #    docker:
@@ -76,28 +78,28 @@ jobs:
 #          command: |
 #            echo "Installing golangci-lint"
 
-  test:
-    machine:
-      image: ubuntu-1604:201903-01
-    working_directory: ~/go/src/github.com/metanerd/circleci-ee
-    steps:
-      - checkout
-      - run: git branch
-      - run: echo ${CIRCLE_BRANCH}
-      - run: echo ${CIRCLE_SHA1}
-      - when:
-          condition: << pipeline.parameters.external_sha >>
-          steps:
-            - run: expr length "${GITHUB_USER_TOKEN}"
-            - run:
-                name: Sending success status
-                command: |
-                  curl \
-                    --request POST \
-                    --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.external_sha >> \
-                    --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
-                    --header 'content-type: application/json' \
-                    --data '{"state": "success", "description": "Enterprise tests passed. ", "context": "enterprise-integration/circleci"}'
+#  test:
+#    machine:
+#      image: ubuntu-1604:201903-01
+#    working_directory: ~/go/src/github.com/metanerd/circleci-ee
+#    steps:
+#      - checkout
+#      - run: git branch
+#      - run: echo ${CIRCLE_BRANCH}
+#      - run: echo ${CIRCLE_SHA1}
+#      - when:
+#          condition: << pipeline.parameters.external_sha >>
+#          steps:
+#            - run: expr length "${GITHUB_USER_TOKEN}"
+#            - run:
+#                name: Sending success status
+#                command: |
+#                  curl \
+#                    --request POST \
+#                    --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.external_sha >> \
+#                    --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
+#                    --header 'content-type: application/json' \
+#                    --data '{"state": "success", "description": "Enterprise tests passed. ", "context": "enterprise-integration/circleci"}'
 
 workflows:
   version: 2
@@ -120,7 +122,7 @@ workflows:
       - setup:
           context: metanerd-trigger-ee
 #      - build
-      - test:
-          context: metanerd-trigger-ee
+#      - test:
+#          context: metanerd-trigger-ee
 #          requires:
 #            - build
