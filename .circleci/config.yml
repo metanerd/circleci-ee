@@ -19,7 +19,7 @@ jobs:
           condition: << pipeline.parameters.external_sha >>
           steps:
             - run: expr length "${GITHUB_USER_TOKEN}"
-            - run: echo "${CIRCLE_SHA1}"
+            - run: echo "Internal sha ${CIRCLE_SHA1}"
             - run: echo "<< pipeline.parameters.external_sha >>"
             - run: if [[ "${CIRCLE_SHA1}" == "<< pipeline.parameters.external_sha >>" ]];then echo "same"; else echo "different";fi;
             - run:
@@ -31,18 +31,18 @@ jobs:
                     --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
                     --header 'content-type: application/json' \
                     --data '{"state": "pending", "description": "Why are you using the wrong sha? Running Enterprise master with << pipeline.parameters.external_sha >> . ", "context": "circleci/enterprise-integration"}'
-#      - run:
-#          name: set trap
-#          command: |
-#            trap 'curl \
-#              --request POST \
-#              --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.external_sha >> \
-#              --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
-#              --header "Content-Type: application/json" \
-#              --data "{\"state\": \"failure\", \"description\": \"Trap got triggered. \", \"context\": \"circleci/enterprise-integration\"}" \
-#            ' ERR
-#            trap -p
-#            echo "hello" | grep foo
+      - run:
+          name: set trap
+          command: |
+            trap 'curl \
+              --request POST \
+              --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.external_sha >> \
+              --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
+              --header "Content-Type: application/json" \
+              --data "{\"state\": \"failure\", \"description\": \"Trap got triggered. \", \"context\": \"circleci/enterprise-integration\"}" \
+            ' ERR
+            trap -p
+            echo "hello" | grep foo
 #      - run:
 #          name: Checkout mattermost-server
 #          command: |
