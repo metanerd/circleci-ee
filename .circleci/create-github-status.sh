@@ -7,6 +7,4 @@ curl \
   --url https://api.github.com/repos/metanerd/circleci-test/statuses/"$EXTERNAL_SHA" \
   --user "$GITHUB_USER":"$GITHUB_USER_TOKEN" \
   --header 'content-type: application/json' \
-  --data state=$GITHUB_STATUS \
-  --data description=$GITHUB_DESCRIPTION \
-  --data context=$GITHUB_CONTEXT
+  --data "{\"state\": \"$GITHUB_STATUS\", \"description\": \"$GITHUB_DESCRIPTION\", \"context\": \"$GITHUB_CONTEXT\"}"
