@@ -28,7 +28,7 @@ jobs:
                     --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.external_sha >> \
                     --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
                     --header 'content-type: application/json' \
-                    --data '{"state": "pending", "description": "Running Enterprise master with << pipeline.parameters.external_sha >> . ", "context": "circleci/enterprise-integration"}'
+                    --data '{"state": "pending", "description": "Why are you using the wrong sha? Running Enterprise master with << pipeline.parameters.external_sha >> . ", "context": "circleci/enterprise-integration"}'
 #      - run:
 #          name: set trap
 #          command: |
