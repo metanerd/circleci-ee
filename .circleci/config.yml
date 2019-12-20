@@ -30,16 +30,16 @@ jobs:
 #                    "<< pipeline.parameters.external_sha >>" \
 #                    "pending" \
 #                    "Running enterprise master tests with << pipeline.parameters.external_sha >>" \
-#            - run:
-#                name: set trap
-#                command: |
-#                  if [[ << pipeline.parameters.external_sha >> ]]
-#                  then
-#                  trap '/go/src/github.com/metanerd/.circleci/create-github-status.sh << pipeline.parameters.external_sha >> "failure" "Enterprise tests failed. "' ERR
-#                  fi
-#
-#                  trap -p
-#                  echo "hello" | grep foo
+      - run:
+          name: set trap
+          command: |
+            if [[ "<< pipeline.parameters.external_sha >>" ]]
+            then
+              trap '/go/src/github.com/metanerd/.circleci/create-github-status.sh "<< pipeline.parameters.external_sha >>" "failure" "Enterprise tests failed. "' ERR
+            fi
+
+            trap -p
+            echo "hello" | grep foo
       - run:
           name: Checkout mattermost-server
           command: |
