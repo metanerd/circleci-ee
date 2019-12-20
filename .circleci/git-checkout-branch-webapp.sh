@@ -20,7 +20,7 @@ then
   PR_NUMBER=${EXTERNAL_BRANCH#pull/}
   PR_AUTHOR_COLON_FORK_BRANCH=$(curl --request GET   --url https://api.github.com/repos/"$USER_UPSTREAM"/"$REPO_TRIGGER"/pulls/"$PR_NUMBER" | jq --raw-output '. | .head.label')
   echo "$PR_AUTHOR_COLON_FORK_BRANCH"
-  
+
   FORK_BRANCH=${PR_AUTHOR_COLON_FORK_BRANCH##*:}
   PR_AUTHOR=${PR_AUTHOR_COLON_FORK_BRANCH%$FORK_BRANCH}
   echo "$PR_AUTHOR_COLON_FORK_BRANCH is equal to $PR_AUTHOR:$FORK_BRANCH"

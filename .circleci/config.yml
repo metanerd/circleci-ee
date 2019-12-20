@@ -13,8 +13,8 @@ jobs:
     docker:
       - image: mattermost/mattermost-build-webapp:oct-2-2018
     working_directory: /go/src/github.com/metanerd/
-#    steps:
-#      - checkout
+    steps:
+      - checkout
 #      - when:
 #          condition: << pipeline.parameters.external_sha >>
 #          steps:
@@ -44,7 +44,6 @@ jobs:
           command: |
             mkdir -p ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-#            /go/src/github.com/metanerd/.circleci/git-checkout-branch-server.sh "<< pipeline.parameters.external_branch >>"
             /go/src/github.com/metanerd/.circleci/git-checkout-branch-server.sh "pull/2"
             git branch
       - run:
@@ -53,7 +52,6 @@ jobs:
             ls -la
             mkdir -p ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-#            /go/src/github.com/metanerd/.circleci/git-checkout-branch-webapp.sh "<< pipeline.parameters.external_branch >>"
             /go/src/github.com/metanerd/.circleci/git-checkout-branch-webapp.sh "pull/2"
 
             export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
