@@ -9,6 +9,8 @@ REPO_TRIGGER="circleci-test"
 REPO_COMPANION="circleci-test"
 USER_UPSTREAM="metanerd"
 
+mkdir test && cd test || exit
+
 if [[ "${EXTERNAL_BRANCH}" == "" ]]
 then
   echo "Triggered internally by enterprise master and branch. "
