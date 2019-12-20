@@ -45,7 +45,7 @@ jobs:
           command: |
             mkdir -p ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch-server.sh "pull/2"
+            /go/src/github.com/metanerd/.circleci/git-checkout-branch-server.sh "trigger-ee"
             git branch
       - run:
           name: Checkout mattermost-webapp
@@ -53,7 +53,7 @@ jobs:
             ls -la
             mkdir -p ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch-webapp.sh "pull/2"
+            /go/src/github.com/metanerd/.circleci/git-checkout-branch-webapp.sh "trigger-ee"
 
             export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
             echo "$WEBAPP_GIT_COMMIT"
