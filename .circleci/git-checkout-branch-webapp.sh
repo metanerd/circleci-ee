@@ -21,7 +21,7 @@ then
 elif [[ -n "$EXTERNAL_BRANCH" && $(echo "$EXTERNAL_BRANCH" | grep -c "^pull\/[0-9]*$") == 1 ]]
 then
   echo "EXTERNAL_BRANCH is actually a forked pull request in $REPO_TRIGGER. " \
-    "Trying to find the appropriate companion branch for $REPO_REPO_COMPANION. "
+    "Trying to find the appropriate companion branch for $REPO_COMPANION. "
 
   echo "Get PR author and branch name of $REPO_TRIGGER fork. "
   PR_NUMBER=${EXTERNAL_BRANCH#pull/}
