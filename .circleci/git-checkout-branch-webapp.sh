@@ -4,6 +4,11 @@ REPO_TRIGGER="mattermost-server"
 REPO_COMPANION="mattermost-webapp"
 USER_UPSTREAM="mattermost"
 
+# test overwrites:
+REPO_TRIGGER="circleci-test"
+REPO_COMPANION="circleci-test"
+USER_UPSTREAM="metanerd"
+
 if [[ "${EXTERNAL_BRANCH}" == "" ]]
 then
   echo "Triggered internally by enterprise master and branch. "

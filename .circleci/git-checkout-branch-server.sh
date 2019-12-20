@@ -1,9 +1,13 @@
 EXTERNAL_BRANCH="$1"
 
 SERVER_REPO="mattermost-server"
-UPSTREAM_USER="mattermost"
+USER_UPSTREAM="mattermost"
 
-git clone git@github.com:$UPSTREAM_USER/$SERVER_REPO.git
+# test overwrites:
+SERVER_REPO="circleci-test"
+USER_UPSTREAM="metanerd"
+
+git clone git@github.com:$USER_UPSTREAM/$SERVER_REPO.git
 cd $SERVER_REPO || exit
 
 if [[ "${EXTERNAL_BRANCH}" == "" ]]
