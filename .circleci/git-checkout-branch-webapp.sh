@@ -53,7 +53,6 @@ then
       git clone git@github.com:$USER_UPSTREAM/$REPO_COMPANION.git
       cd $REPO_COMPANION || exit
       git checkout "$FORK_BRANCH"
-
     else
       echo "No companion branch found in fork. Proceeding with upstream master. "
 
@@ -68,10 +67,6 @@ then
     cd $REPO_COMPANION || exit
     git checkout master
   fi
-
-  echo "Triggered externally by a forked $REPO_TRIGGER PR. "
-  git fetch origin pull/"$PR_NUMBER"/head:PR-"$PR_NUMBER"
-  git checkout PR-"$PR_NUMBER"
 elif [[ -n "$EXTERNAL_BRANCH" && $(echo "$EXTERNAL_BRANCH" | grep -c "^pull\/[0-9]*$") == 0 ]]
 then
   echo "Triggered externally by an upstream $REPO_TRIGGER PR. "
