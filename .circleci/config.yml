@@ -15,6 +15,7 @@ jobs:
     working_directory: /go/src/github.com/metanerd/
     steps:
       - checkout
+      - apt update && apt install jq -y
 #      - when:
 #          condition: << pipeline.parameters.external_sha >>
 #          steps:
