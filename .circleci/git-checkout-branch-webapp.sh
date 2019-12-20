@@ -10,6 +10,12 @@ REPO_COMPANION="circleci-test"
 USER_UPSTREAM="metanerd"
 mkdir test && cd test || exit
 
+checkout_user_repo_branch() {
+  git clone git@github.com:"$1"/"$2".git
+  cd "$2" || exit
+  git checkout "$3"
+}
+
 if [[ "${EXTERNAL_BRANCH}" == "" ]]
 then
   echo "Triggered internally by enterprise master and branch. "
@@ -55,24 +61,18 @@ then
     else
       echo "No companion branch found in fork. Proceeding with upstream master. "
 
-      git clone git@github.com:$USER_UPSTREAM/$REPO_COMPANION.git
-      cd $REPO_COMPANION || exit
-      git checkout master
+      checkout_user_repo_branch $USER_UPSTREAM $REPO_COMPANION "master"
     fi
   else
     echo "No companion branch found in fork. Proceeding with upstream master. "
 
-    git clone git@github.com:$USER_UPSTREAM/$REPO_COMPANION.git
-    cd $REPO_COMPANION || exit
-    git checkout master
+    checkout_user_repo_branch $USER_UPSTREAM $REPO_COMPANION "master"
   fi
 elif [[ -n "$EXTERNAL_BRANCH" && $(echo "$EXTERNAL_BRANCH" | grep -c "^pull\/[0-9]*$") == 0 ]]
 then
   echo "Triggered externally by an upstream $REPO_TRIGGER PR. "
 
-  git clone git@github.com:$USER_UPSTREAM/$REPO_COMPANION.git
-  cd $REPO_COMPANION || exit
-  git checkout "$EXTERNAL_BRANCH"
+  checkout_user_repo_branch $USER_UPSTREAM $REPO_COMPANION "$EXTERNAL_BRANCH"
 else
   echo "Unknown edge case for checking out a git branch detected. "
 fi
