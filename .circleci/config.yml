@@ -13,41 +13,39 @@ jobs:
     docker:
       - image: mattermost/mattermost-build-webapp:oct-2-2018
     working_directory: /go/src/github.com/metanerd/
-    steps:
-      - checkout
-      - when:
-          condition: << pipeline.parameters.external_sha >>
-          steps:
-            - run: expr length "${GITHUB_USER_TOKEN}"
-            - run: echo "Internal sha ${CIRCLE_SHA1}"
-            - run: echo "<< pipeline.parameters.external_sha >>"
-            - run: if [[ "${CIRCLE_SHA1}" == "<< pipeline.parameters.external_sha >>" ]];then echo "same"; else echo "different";fi;
-            - run:
-                name: Send pending status
-                command: |
-                  /go/src/github.com/metanerd/.circleci/create-github-status.sh \
-                    "<< pipeline.parameters.external_sha >>" \
-                    "pending" \
-                    "Running enterprise master tests with << pipeline.parameters.external_sha >>" \
-            - run:
-                name: set trap
-                command: |
-                  if [[ << pipeline.parameters.external_sha >> ]]
-                  then
-                  trap '/go/src/github.com/metanerd/.circleci/create-github-status.sh << pipeline.parameters.external_sha >> "failure" "Enterprise tests failed. "' ERR
-                  fi
-
-                  trap -p
-                  echo "hello" | grep foo
+#    steps:
+#      - checkout
+#      - when:
+#          condition: << pipeline.parameters.external_sha >>
+#          steps:
+#            - run: expr length "${GITHUB_USER_TOKEN}"
+#            - run: echo "Internal sha ${CIRCLE_SHA1}"
+#            - run: echo "<< pipeline.parameters.external_sha >>"
+#            - run: if [[ "${CIRCLE_SHA1}" == "<< pipeline.parameters.external_sha >>" ]];then echo "same"; else echo "different";fi;
+#            - run:
+#                name: Send pending status
+#                command: |
+#                  /go/src/github.com/metanerd/.circleci/create-github-status.sh \
+#                    "<< pipeline.parameters.external_sha >>" \
+#                    "pending" \
+#                    "Running enterprise master tests with << pipeline.parameters.external_sha >>" \
+#            - run:
+#                name: set trap
+#                command: |
+#                  if [[ << pipeline.parameters.external_sha >> ]]
+#                  then
+#                  trap '/go/src/github.com/metanerd/.circleci/create-github-status.sh << pipeline.parameters.external_sha >> "failure" "Enterprise tests failed. "' ERR
+#                  fi
+#
+#                  trap -p
+#                  echo "hello" | grep foo
       - run:
           name: Checkout mattermost-server
           command: |
             mkdir -p ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            git clone git@github.com:mattermost/mattermost-server.git
-
-            cd mattermost-server
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch.sh "<< pipeline.parameters.external_branch >>"
+#            /go/src/github.com/metanerd/.circleci/git-checkout-branch-server.sh "<< pipeline.parameters.external_branch >>"
+            /go/src/github.com/metanerd/.circleci/git-checkout-branch-server.sh "pull/2"
             git branch
       - run:
           name: Checkout mattermost-webapp
@@ -55,10 +53,8 @@ jobs:
             ls -la
             mkdir -p ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            git clone git@github.com:mattermost/mattermost-webapp.git
-
-            cd mattermost-webapp
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch.sh "<< pipeline.parameters.external_branch >>"
+#            /go/src/github.com/metanerd/.circleci/git-checkout-branch-webapp.sh "<< pipeline.parameters.external_branch >>"
+            /go/src/github.com/metanerd/.circleci/git-checkout-branch-webapp.sh "pull/2"
 
             export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
             echo "$WEBAPP_GIT_COMMIT"
