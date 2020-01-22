@@ -42,18 +42,22 @@ jobs:
 #            echo "hello" | grep foo
       - run:
           name: Checkout mattermost-server
+          environment:
+            EXTERNAL_BRANCH: trigger-ee
           command: |
             mkdir -p ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch-server.sh "trigger-ee"
+            /go/src/github.com/metanerd/.circleci/git-checkout-branch-server.sh "$EXTERNAL_BRANCH"
             git branch
       - run:
           name: Checkout mattermost-webapp
+          environment:
+            EXTERNAL_BRANCH: trigger-ee
           command: |
             ls -la
             mkdir -p ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch-webapp.sh "trigger-ee"
+            /go/src/github.com/metanerd/.circleci/git-checkout-branch-webapp.sh "$EXTERNAL_BRANCH"
 
             export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
             echo "$WEBAPP_GIT_COMMIT"
