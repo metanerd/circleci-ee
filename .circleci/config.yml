@@ -16,80 +16,39 @@ jobs:
     steps:
       - checkout
       - run: apt-get update && apt-get install jq -y
-#      - when:
-#          condition: << pipeline.parameters.external_sha >>
-#          steps:
-#            - run: expr length "${GITHUB_USER_TOKEN}"
-#            - run: echo "Internal sha ${CIRCLE_SHA1}"
-#            - run: echo "<< pipeline.parameters.external_sha >>"
-#            - run: if [[ "${CIRCLE_SHA1}" == "<< pipeline.parameters.external_sha >>" ]];then echo "same"; else echo "different";fi;
-#            - run:
-#                name: Send pending status
-#                command: |
-#                  /go/src/github.com/metanerd/.circleci/create-github-status.sh \
-#                    "<< pipeline.parameters.external_sha >>" \
-#                    "pending" \
-#                    "Running enterprise master tests with << pipeline.parameters.external_sha >>" \
-      - run:
-          name: set trap
-          command: |
-            if [[ "<< pipeline.parameters.external_sha >>" ]]
-            then
-              trap '/go/src/github.com/metanerd/.circleci/create-github-status.sh "<< pipeline.parameters.external_sha >>" "failure" "Enterprise tests failed. "' ERR
-            fi
-
-#            trap -p
-#            echo "hello" | grep foo
-      - run:
-          name: Checkout mattermost-server
-          command: |
-            mkdir -p ~/.ssh/
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch-server.sh "trigger-ee"
-            git branch
-      - run:
-          name: Checkout mattermost-webapp
-          command: |
-            ls -la
-            mkdir -p ~/.ssh/
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            /go/src/github.com/metanerd/.circleci/git-checkout-branch-webapp.sh "trigger-ee"
-
-            export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
-            echo "$WEBAPP_GIT_COMMIT"
-
-#  build:
-#    docker:
-#      - image: mattermost/mattermost-build-server:oct-18-2019
-#    steps:
-#      - checkout
-#      - attach_workspace:
-#          at: /go/src/github.com/metanerd/
+      - when:
+          condition: << pipeline.parameters.external_sha >>
+          steps:
+            - run: expr length "${GITHUB_USER_TOKEN}"
+            - run: echo "Internal sha ${CIRCLE_SHA1}"
+            - run: echo "<< pipeline.parameters.external_sha >>"
+            - run: if [[ "${CIRCLE_SHA1}" == "<< pipeline.parameters.external_sha >>" ]];then echo "same"; else echo "different";fi;
+            - run:
+                name: Send pending status
+                command: |
+                  /go/src/github.com/metanerd/.circleci/create-github-status.sh \
+                    "<< pipeline.parameters.external_sha >>" \
+                    "pending" \
+                    "Running enterprise master tests with << pipeline.parameters.external_sha >>" \
 #      - run:
+#          name: set trap
 #          command: |
-#            echo "Installing golangci-lint"
-
-#  test:
-#    machine:
-#      image: ubuntu-1604:201903-01
-#    working_directory: ~/go/src/github.com/metanerd/circleci-ee
-#    steps:
-#      - checkout
-#      - run: git branch
-#      - run: echo ${CIRCLE_BRANCH}
-#      - run: echo ${CIRCLE_SHA1}
-#      - when:
-#          condition: << pipeline.parameters.external_sha >>
-#          steps:
-#            - run:
-#                name: Sending success status
-#                command: |
-#                  curl \
-#                    --request POST \
-#                    --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.external_sha >> \
-#                    --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
-#                    --header 'content-type: application/json' \
-#                    --data '{"state": "success", "description": "Enterprise tests passed. ", "context": "enterprise-integration/circleci"}'
+#            if [[ "<< pipeline.parameters.external_sha >>" ]]
+#            then
+#              trap '/go/src/github.com/metanerd/.circleci/create-github-status.sh "<< pipeline.parameters.external_sha >>" "failure" "Enterprise tests failed. "' ERR
+#            fi
+#
+#            trap -p
+#            echo "hello" | grep hello
+      - run:
+          name: Sending success status
+          command: |
+            curl \
+              --request POST \
+              --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.external_sha >> \
+              --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
+              --header 'content-type: application/json' \
+              --data '{"state": "success", "description": "Enterprise tests passed. ", "context": "enterprise-integration/circleci"}'
 
 workflows:
   version: 2
@@ -98,21 +57,9 @@ workflows:
     jobs:
       - setup:
           context: metanerd-trigger-ee
-#      - build
-#      - test:
-#          requires:
-#            - build
-#          filters:
-#            branches:
-#              ignore: /^pull\/.*$/
 
   trigger-from-server:
     when: << pipeline.parameters.external_sha >>
     jobs:
       - setup:
           context: metanerd-trigger-ee
-#      - build
-#      - test:
-#          context: metanerd-trigger-ee
-#          requires:
-#            - build
