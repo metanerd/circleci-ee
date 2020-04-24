@@ -29,7 +29,7 @@ jobs:
                   /go/src/github.com/metanerd/.circleci/create-github-status.sh \
                     "<< pipeline.parameters.external_sha >>" \
                     "pending" \
-                    "Running enterprise master tests with << pipeline.parameters.external_sha >>" \
+                    "EE tests running sha << pipeline.parameters.external_sha >>" \
 #      - run:
 #          name: set trap
 #          command: |
@@ -48,7 +48,7 @@ jobs:
               --url https://api.github.com/repos/metanerd/circleci-test/statuses/<< pipeline.parameters.external_sha >> \
               --user ${GITHUB_USER}:${GITHUB_USER_TOKEN} \
               --header 'content-type: application/json' \
-              --data '{"state": "success", "description": "Enterprise tests passed. ", "context": "enterprise-integration/circleci"}'
+              --data '{"state": "success", "description": "EE tests success. ", "context": "ee/mattermost/approved"}'
 
 workflows:
   version: 2
